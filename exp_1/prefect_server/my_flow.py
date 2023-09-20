@@ -1,10 +1,10 @@
-# my_flow.py
 import httpx
 from prefect import flow, task
 
+
 @task(retries=2)
 def get_repo_info(repo_owner: str, repo_name: str):
-    """ Get info about a repo - will retry twice after failing """
+    """Get info about a repo - will retry twice after failing"""
     url = f"https://api.github.com/repos/{repo_owner}/{repo_name}"
     api_response = httpx.get(url)
     api_response.raise_for_status()
@@ -20,23 +20,21 @@ def get_contributors(repo_info: dict):
     contributors = response.json()
     return contributors
 
-@flow(name="Repo Info", log_prints=True)  
-def repo_info(
-    repo_owner: str = "PrefectHQ", repo_name: str = "prefect"
-):
-    # call our `get_repo_info` task
+
+@flow(name="Repo Info", log_prints=True)
+def repo_info(repo_owner: str = "PrefectHQ", repo_name: str = "prefect"):
+    """
+    Given a GitHub repository, logs the number of stargazers
+    and contributors for that repo.
+    """
     repo_info = get_repo_info(repo_owner, repo_name)
     print(f"Stars 🌠 : {repo_info['stargazers_count']}")
 
-    # call our `get_contributors` task, 
-    # passing in the upstream result
     contributors = get_contributors(repo_info)
-    print(
-        f"Number of contributors 👷: {len(contributors)}"
-    )
+    print(f"Number of contributors 👷: {len(contributors)}")
 
 
 if __name__ == "__main__":
-    # Call a flow function for a local flow run!
-    repo_info()
+    # create your first deployment
+    repo_info.serve(name="my-first-deployment")
 

@@ -1,5 +1,5 @@
 import httpx
-from prefect import flow, task
+from prefect import flow, task, get_run_logger
 
 
 @task(retries=2)
@@ -21,13 +21,15 @@ def get_contributors(repo_info: dict):
     return contributors
 
 
-@flow(name="Repo Info", log_prints=True)
+@flow(retries=3, retry_delay_seconds=5, name="Repo Info", log_prints=True)
 def repo_info(repo_owner: str = "PrefectHQ", repo_name: str = "prefect"):
     """
     Given a GitHub repository, logs the number of stargazers
     and contributors for that repo.
     """
-    print("################# VERSION 3 ##################")
+    logger = get_run_logger()
+    logger.info("################# VERSION 4 ##################")
+    raise Exception("BIG FAT ERROR")
     repo_info = get_repo_info(repo_owner, repo_name)
     print(f"Stars 🌠 : {repo_info['stargazers_count']}")
 
@@ -37,8 +39,8 @@ def repo_info(repo_owner: str = "PrefectHQ", repo_name: str = "prefect"):
 
 if __name__ == "__main__":
     # run manually
-    #repo_info()
+    repo_info()
 
     # create your first deployment
-    repo_info.serve(name="my-first-deployment V3")
+    #repo_info.serve(name="my-first-deployment V3")
 

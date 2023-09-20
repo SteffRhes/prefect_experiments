@@ -1,6 +1,8 @@
 services:
   prefect_server:
-    build: .
+    build: 
+      context: .
+      dockerfile: prefect_server.dockerfile
     volumes:
       - ./:/home/docker_user
     #entrypoint: ["prefect", "server", "start"]
@@ -10,4 +12,12 @@ services:
     ports:
       - 4200:4200
     command: prefect server start
+
+  prefect_client:
+    build: 
+      context: .
+      dockerfile: prefect_server.dockerfile
+    volumes:
+      - ./:/home/docker_user
+
 

@@ -2,4 +2,5 @@
 .prefect
 .python_history
 .sqlite_history
+/tmp
 

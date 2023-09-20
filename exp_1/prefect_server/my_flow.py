@@ -9,6 +9,7 @@ def get_repo_info(repo_owner: str, repo_name: str):
     api_response = httpx.get(url)
     api_response.raise_for_status()
     repo_info = api_response.json()
+    print(repo_info)
     return repo_info
 
 
@@ -35,6 +36,9 @@ def repo_info(repo_owner: str = "PrefectHQ", repo_name: str = "prefect"):
 
 
 if __name__ == "__main__":
+    # run manually
+    repo_info()
+
     # create your first deployment
-    repo_info.serve(name="my-first-deployment")
+    #repo_info.serve(name="my-first-deployment")
 

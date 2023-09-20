@@ -4,20 +4,25 @@ services:
       context: .
       dockerfile: prefect_server.dockerfile
     volumes:
-      - ./:/home/docker_user
-    #entrypoint: ["prefect", "server", "start"]
+      - ./prefect_server/:/home/docker_user/
     environment:
       - PREFECT_SERVER_API_HOST=0.0.0.0
       - PREFECT_UI_API_URL=http://localhost:4200/api
     ports:
       - 4200:4200
     command: prefect server start
+    networks:
+      - prefect_network
 
   prefect_client:
     build: 
       context: .
-      dockerfile: prefect_server.dockerfile
+      dockerfile: prefect_client.dockerfile
     volumes:
-      - ./:/home/docker_user
+      - ./prefect_client/:/home/docker_user
+    networks:
+      - prefect_network
 
+networks:
+  prefect_network:
 

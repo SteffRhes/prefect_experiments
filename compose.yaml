@@ -1,5 +1,5 @@
 services:
-  prefect:
+  prefect_server:
     build: .
     volumes:
       - ./:/home/docker_user

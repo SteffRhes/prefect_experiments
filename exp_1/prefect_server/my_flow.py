@@ -16,12 +16,12 @@ def get_open_issues(repo_name: str, open_issues_count: int, per_page: int = 100)
     pages = range(1, -(open_issues_count // -per_page) + 1)
     for page in pages:
         issues.append(
-            get_url(
+            get_url.submit(
                 f"https://api.github.com/repos/{repo_name}/issues",
                 params={"page": page, "per_page": per_page, "state": "open"},
             )
         )
-    return [i for p in issues for i in p]
+    return [i for p in issues for i in p.result()]
 
 
 @flow(retries=3, retry_delay_seconds=5, log_prints=True)

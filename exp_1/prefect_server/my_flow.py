@@ -1,10 +1,13 @@
 import httpx
+from datetime import timedelta
 from prefect import flow, task, get_run_logger
+from prefect.tasks import task_input_hash
 
 
-@task(retries=2)
+@task(cache_key_fn=task_input_hash, cache_expiration=timedelta(hours=1))
 def get_repo_info(repo_owner: str, repo_name: str):
     """Get info about a repo - will retry twice after failing"""
+    print("RUNNING: get_repo_info")
     url = f"https://api.github.com/repos/{repo_owner}/{repo_name}"
     api_response = httpx.get(url)
     api_response.raise_for_status()
@@ -29,7 +32,7 @@ def repo_info(repo_owner: str = "PrefectHQ", repo_name: str = "prefect"):
     """
     logger = get_run_logger()
     logger.info("################# VERSION 4 ##################")
-    raise Exception("BIG FAT ERROR")
+    #raise Exception("BIG FAT ERROR")
     repo_info = get_repo_info(repo_owner, repo_name)
     print(f"Stars 🌠 : {repo_info['stargazers_count']}")
 

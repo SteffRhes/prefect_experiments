@@ -3,5 +3,6 @@
 .sqlite_history
 .cache
 .local
+**/.prefect/storage/
 /tmp
 

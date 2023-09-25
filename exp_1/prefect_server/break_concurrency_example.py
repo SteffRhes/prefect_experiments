@@ -4,6 +4,7 @@ from prefect import flow, task
 
 value = None
 
+
 @task()
 def bar(i):
     global value

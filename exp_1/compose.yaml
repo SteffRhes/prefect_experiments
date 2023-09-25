@@ -13,6 +13,25 @@ services:
     command: prefect server start
     networks:
       - prefect_network
+    depends_on:
+      postgres_db:
+        condition: service_started 
+
+  postgres_db:
+    image: postgres:16.0
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: yourTopSecretPassword
+      POSTGRES_DB: prefect
+    volumes:
+      - ./postgres_db/:/var/lib/postgresql/data
+    networks:
+      - prefect_network
+
+#    image: docker run -d --name prefect-postgres -v prefectdb:/var/lib/postgresql/data -p 5432:5432 -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=yourTopSecretPassword -e POSTGRES_DB=prefect postgres:latest
+
 
   prefect_client:
     build: 

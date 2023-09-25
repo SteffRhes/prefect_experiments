@@ -14,8 +14,15 @@ def fast_flow():
     return
 
 
+@flow
+def foo():
+    print("foo")
+
+
 if __name__ == "__main__":
-    slow_deploy = slow_flow.to_deployment(name="sleeper", interval=45)
-    fast_deploy = fast_flow.to_deployment(name="fast")
-    serve(slow_deploy, fast_deploy)
+    foo.serve(name="my-first-deployment")
+
+    #slow_deploy = slow_flow.to_deployment(name="sleeper", interval=45)
+    #fast_deploy = fast_flow.to_deployment(name="fast")
+    #serve(slow_deploy, fast_deploy)
 

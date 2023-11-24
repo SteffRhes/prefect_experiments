@@ -2,3 +2,4 @@ active = "default"
 
 [profiles.default]
 PREFECT_API_DATABASE_CONNECTION_URL = "postgresql+asyncpg://postgres:yourTopSecretPassword@postgres_db:5432/prefect"
+PREFECT_API_URL = "http://127.0.0.1:4200/api"

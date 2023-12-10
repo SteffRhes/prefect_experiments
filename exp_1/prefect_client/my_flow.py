@@ -1,42 +1,41 @@
-# my_flow.py
 import httpx
+from datetime import timedelta
 from prefect import flow, task
-
-@task(retries=2)
-def get_repo_info(repo_owner: str, repo_name: str):
-    """ Get info about a repo - will retry twice after failing """
-    url = f"https://api.github.com/repos/{repo_owner}/{repo_name}"
-    api_response = httpx.get(url)
-    api_response.raise_for_status()
-    repo_info = api_response.json()
-    return repo_info
+from prefect.tasks import task_input_hash
 
 
-@task
-def get_contributors(repo_info: dict):
-    contributors_url = repo_info["contributors_url"]
-    response = httpx.get(contributors_url)
+@task(cache_key_fn=task_input_hash, cache_expiration=timedelta(hours=1))
+def get_url(url: str, params: dict = None):
+    response = httpx.get(url, params=params)
     response.raise_for_status()
-    contributors = response.json()
-    return contributors
+    return response.json()
 
-@flow(name="Repo Info", log_prints=True)  
-def repo_info(
-    repo_owner: str = "PrefectHQ", repo_name: str = "prefect"
-):
-    # call our `get_repo_info` task
-    repo_info = get_repo_info(repo_owner, repo_name)
-    print(f"Stars 🌠 : {repo_info['stargazers_count']}")
 
-    # call our `get_contributors` task, 
-    # passing in the upstream result
-    contributors = get_contributors(repo_info)
-    print(
-        f"Number of contributors 👷: {len(contributors)}"
-    )
+def get_open_issues(repo_name: str, open_issues_count: int, per_page: int = 100):
+    issues = []
+    pages = range(1, -(open_issues_count // -per_page) + 1)
+    for page in pages:
+        issues.append(
+            get_url.submit(
+                f"https://api.github.com/repos/{repo_name}/issues",
+                params={"page": page, "per_page": per_page, "state": "open"},
+            )
+        )
+    return [i for p in issues for i in p.result()]
+
+
+@flow(retries=3, retry_delay_seconds=5, log_prints=True)
+def get_repo_info(repo_name: str = "PrefectHQ/prefect"):
+    repo_stats = get_url(f"https://api.github.com/repos/{repo_name}")
+    issues = get_open_issues(repo_name, 500, 10)
+    issues_per_user = len(issues) / len(set([i["user"]["id"] for i in issues]))
+    print(f"{repo_name} repository statistics 🤓:")
+    print(f"Stars 🌠 : {repo_stats['stargazers_count']}")
+    print(f"Forks 🍴 : {repo_stats['forks_count']}")
+    print(f"Average open issues per user 💌 : {issues_per_user:.2f}")
 
 
 if __name__ == "__main__":
-    # Call a flow function for a local flow run!
-    repo_info()
+    # run manually
+    get_repo_info()
 

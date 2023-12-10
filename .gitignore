@@ -5,4 +5,5 @@
 .local
 **/.prefect/storage/
 /tmp
+/exp_1/postgres_db/
 

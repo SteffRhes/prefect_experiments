@@ -5,6 +5,8 @@ services:
       dockerfile: prefect_server.dockerfile
     volumes:
       - ./prefect_server/:/home/docker_user/
+      # for docker in docker, mount host's unix socket
+      - /var/run/docker.sock:/var/run/docker.sock
     environment:
       - PREFECT_SERVER_API_HOST=0.0.0.0
       - PREFECT_UI_API_URL=http://localhost:4200/api

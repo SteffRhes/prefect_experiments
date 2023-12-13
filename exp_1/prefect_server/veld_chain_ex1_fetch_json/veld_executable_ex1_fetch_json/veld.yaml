@@ -1,0 +1,80 @@
+
+# The `x-veld` defines the metadata section for a VELD. the `x-` is a necessity by docker compose as
+# any key containing this prefix is ignored by docker compose
+x-veld:
+
+  # There are three VELD objects: data, exectuable, and chain. This here is an executable
+  executable:
+
+    # The `about` key describes metadata meant for humans
+    about:
+
+      # full text description of this executable
+      description: "example veld for testing and showcasing"
+
+      # the `topics` keyword can describe the general task area a VELD is concerned with. It's an
+      # attribute that is not used by any VELD code, but meant for devs to describe their VELD, and
+      # to make it discoverable for other devs for reusability
+      topics: 
+        - "REST API"
+        - "ETL"
+
+    # `input` describes the requirements on the incoming side of this VELD's interoperability.
+    input:
+
+      # `type` will take values from a controlled vocabulary which is to be developed. 
+      # Here, this VELD executable needs an environment variable defined via the `environment` 
+      # section of the VELD chain service.      
+      type: "environment variable"
+
+      # the name of the variable, e.g. `id: 42`
+      name: "id"
+      
+      # In this case, the input is optional, since if it's empty, the fetcher will download all json
+      # files from the dummy resource. 
+      # In general, if an input has no `optional` key, then it defaults to `optional: false`
+      optional: true
+
+    # `output` describes the requirements on the outgoing side of this VELD's interoperability
+    output:
+
+      # "files" is an umbrella term for a single file, several files, a folder, or several folders
+      type: "files"
+
+      # The format of the file, files, files in folder, or folders
+      format: "json"
+
+      # `content` is described with a vocabulary, independent of `type` or `format`
+      content: "dummy data"
+
+      # The path inside the container of this executable. This is a critical key, as any chain
+      # reusing this executable, must map a volume to this path
+      path: /veld/output/data.json
+
+# classical docker compose stuff.
+services:
+
+  # An excutable could contain several services if necessary, as long as they form a cohesive
+  # service together. But most of the times, an executable probably will only need one service. You
+  # can name it whatever, but it is advised to call it veld if it's the only service or the "main"
+  # service
+  veld:
+
+    # you might build a service yourself with a Dockerfile, or reuse an image. Doesn't matter, as
+    # long as it runs as docker service and the VELD metadata above confirms to its schema
+    build: .
+
+    # You might mount code with a volume, or alternatively bake it into the docker image as well.
+    # However for quick development it is recommended to mount the code and use the docker image
+    # as the runtime context, since this way, quick edits on the code do not require re-building 
+    # images. The folder of the code inside the container can be anywhere, but it is recommended to
+    # put it into /veld/executable
+    volumes:
+      - ./fetch.sh:/veld/executable/fetch.sh
+
+    # If the code is mounted rather than persisted into a docker image, executing it from the
+    # compose file here is recommneded as the location depends on the mounted volume, which is
+    # defined just above. This way, the things that relate to each other are defined in a place
+    # close to each other
+    command: sh /veld/executable/fetch.sh
+

@@ -1,0 +1,6 @@
+[submodule "veld_executable_ex1_fetch_json"]
+	path = veld_executable_ex1_fetch_json
+  url = ../veld_executable_ex1_fetch_json.git
+[submodule "veld_data_ex1_json"]
+	path = veld_data_ex1_json
+	url = ../veld_data_ex1_json.git

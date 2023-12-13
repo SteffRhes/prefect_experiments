@@ -1,0 +1,8 @@
+x-veld:
+  data:
+    about:
+      description: "example veld for testing and showcasing"
+    format: "xml"
+    content: "dummy data"
+    path: ./data.xml
+

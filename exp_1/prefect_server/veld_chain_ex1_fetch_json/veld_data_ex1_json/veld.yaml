@@ -1,0 +1,23 @@
+
+# The `x-veld` defines the metadata section for a VELD. the `x-` is a necessity by docker compose as
+# any key containing this prefix is ignored by docker compose
+x-veld:
+
+  # There are three VELD objects: data, exectuable, and chain. This here is a data veld.  Note that
+  # if a data veld is defined, there is no need to define a `type: "files"` as a data veld is
+  # assumed to be of this type
+  data:
+
+    # human stuff
+    about:
+      description: "example veld for testing and showcasing"
+
+    # describes the format of the files of this repo
+    format: "json"
+
+    # content of the overall data
+    content: "dummy data"
+
+    # where to find it, necessary for a chain veld's mapping
+    path: ./data.json
+

@@ -1,0 +1,58 @@
+
+# The `x-veld` defines the metadata section for a VELD. the `x-` is a necessity by docker compose as
+# any key containing this prefix is ignored by docker compose
+x-veld:
+
+  # There are three VELD objects: data, exectuable, and chain. This here is a chain
+  chain:
+
+    # The `about` key describes metadata meant for humans
+    about:
+
+      # full text description of this chain
+      description: "example veld for testing and showcasing"
+
+      # the `topics` keyword can describe the general task area a VELD is concerned with. It's an
+      # attribute that is not used by any VELD code, but meant for devs to describe their VELD, and
+      # to make it discoverable for other devs for reusability
+      topics: 
+        - "REST API"
+        - "ETL"
+
+# classical docker compose stuff
+services:
+
+  # A chain could contain several services if necessary, as long as they form a cohesive service
+  # together. But most of the times, a chain probably will only need one service. You can name it
+  # whatever, but it is advised to call it 'veld' if it's the only service or the "main" service
+  veld:
+
+    # the `extends` key is critical to VELD, as it allows to import a service from another docker
+    # compose file and reuse it. This way, a chain veld would "extend" an exectuable veld and plug
+    # in the necessary context (which is communicated in the executable's `x-veld` metadata
+    # section). Note that "extends" allows overrides, meaning that you can define some default
+    # values in an executable and override them in a chain if necessary
+    extends:
+
+      # points to the veld.yaml file, likely contained in a subrepo
+      file: ./veld_executable_ex1_fetch_json/veld.yaml
+
+      # imports the service from that yaml file, and loads it into this service of this yaml file
+      service: veld
+
+    # With volumes, we map potential input / output folders into the executable
+    volumes:
+
+      # The mapping from host to container. The first part depends on the chain context (which
+      # folders/files of a data veld or the chain repo are used), and the second part depends on the
+      # executable's definition (which path inside the executable's container should be mapped to)
+      # Here, we map a data veld's file into the input path of the executable veld
+      - ./veld_data_ex1_json/data.json:/veld/output/data.json
+
+    # the executable veld requires an environment variable, which it passes down into its script.
+    # The name of the environmnet variable is defined in the `input` section of the executable
+    environment:
+
+      # download the json file with id from the external resource
+      id: "48"
+

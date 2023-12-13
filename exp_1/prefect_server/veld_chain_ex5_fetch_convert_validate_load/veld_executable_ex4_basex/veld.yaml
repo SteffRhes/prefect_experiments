@@ -1,0 +1,50 @@
+x-veld:
+  executable:
+    about:
+      description: "example veld for testing and showcasing"
+      topics: "data persistence"
+    # besides `input` and `output`, there is also a conflated section `input/output`, indicating a
+    # bi-directionality.
+    input/output:
+      -
+        # One input/output is the storage of the database. If files are used in a bi-directional way
+        # it is recommneded to map this internally into /veld/storage
+        type: "files"
+        format: "BaseX Storage"
+        path: /veld/storage/
+      -
+        # Besides files, executables might also provide endpoints, such as a REST API. If that is
+        # the case, it will most likely also fall under input/output as an API usually allows for
+        # reading and writing data. Note that such a type might need to document additional
+        # parameters, such as `url_path` or `port`
+        type: 
+          - "BaseX HTTP endpoint"
+          - "REST API"
+        format: "xml"
+        url_path: "/rest"
+        port: 8984
+      -
+        # A REST API opens a HTTP endpoint. Where this is opened to depends on the chain / docker
+        # context. If another docker service / veld, needs to access it, it might be necessary to
+        # define a docker network, so that these two services can communicate with each other. But
+        # as said above, that depends on the chain's setup, and hence a docker network is optional.
+        # It is however advised to communicate the potential need for such nevertheless like here
+        type: "Docker network"
+        optional: true
+
+services:
+  veld:
+    build: .
+    ports:
+      - 8984:8984
+    # A healthcheck might be necessary if a service in a veld chain depends on this database
+    # service. If so, than the other service must know when it should start. A healthcheck
+    # communicates to other potential services, that it is ready to accept connections
+    healthcheck:
+      test: curl -f admin:admin@localhost:8984/rest
+      interval: 5s
+      timeout: 5s
+      retries: 1
+      start_period: 5s
+    command: basexhttp
+

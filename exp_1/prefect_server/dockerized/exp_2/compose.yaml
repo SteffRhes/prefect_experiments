@@ -1,0 +1,8 @@
+
+services:
+  exp_2:
+    build: .
+    volumes:
+      # host path necessary since docker is executed on host rather than inside container
+      - /home/steff-vm/exp/prefect/exp_1/prefect_server/dockerized/exp_2:/tmp
+    command: ls /tmp

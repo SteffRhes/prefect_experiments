@@ -1,0 +1,73 @@
+x-veld:
+  chain:
+    about:
+      description: "example veld for testing and showcasing"
+      topics: 
+        - "ETL"
+        - "data validation"
+        - "data persistence"
+
+services:
+  veld_fetch:
+    extends:
+      file: ./veld_executable_ex1_fetch_json/veld.yaml
+      service: veld
+    volumes:
+      - /home/steff-vm/exp/prefect/exp_1/prefect_server/veld_chain_ex5_fetch_convert_validate_load/data_tmp/data.json:/veld/output/data.json
+    environment:
+      id: "48"
+
+  veld_convert:
+    extends:
+      file: ./veld_executable_ex2_json_to_xml/veld.yaml
+      service: veld
+    volumes:
+      - /home/steff-vm/exp/prefect/exp_1/prefect_server/veld_chain_ex5_fetch_convert_validate_load/data_tmp/data.json:/veld/input/data.json
+      - /home/steff-vm/exp/prefect/exp_1/prefect_server/veld_chain_ex5_fetch_convert_validate_load/data_tmp/data.xml:/veld/output/data.xml
+    depends_on:
+      veld_fetch:
+        condition: service_completed_successfully
+
+  veld_validate:
+    extends:
+      file: ./veld_executable_ex3_validate_xml/veld.yaml
+      service: veld
+    volumes:
+      - /home/steff-vm/exp/prefect/exp_1/prefect_server/veld_chain_ex5_fetch_convert_validate_load/data_tmp/data.xml:/veld/input/a/data.xml
+      - /home/steff-vm/exp/prefect/exp_1/prefect_server/veld_chain_ex5_fetch_convert_validate_load/data_tmp/validation_result.txt:/veld/output/result.txt
+    depends_on:
+      veld_convert:
+        condition: service_completed_successfully
+
+#  veld_db:
+#    extends:
+#      file: ./veld_executable_ex4_basex/veld.yaml
+#      service: veld
+#    volumes:
+#      - /home/steff-vm/exp/prefect/exp_1/prefect_server/veld_chain_ex5_fetch_convert_validate_load/veld_data_ex3_basex/db_data/:/veld/storage/
+#    networks:
+#      - basex_network 
+#    depends_on:
+#      veld_validate:
+#        condition: service_completed_successfully
+#
+#  veld_load:
+#    extends:
+#      file: ./veld_executable_ex5_load_to_basex/veld.yaml
+#      service: veld
+#    volumes:
+#      - ./data_tmp/data.xml:/veld/input/data.xml
+#    environment:
+#      user: "admin"
+#      password: "admin"
+#      host: "veld_db:8984"
+#      database_name: "veld_dummy_database"
+#    networks:
+#      - basex_network 
+#    depends_on:
+#      veld_db:
+#        condition: service_healthy
+#    
+#networks:
+#  basex_network:
+#

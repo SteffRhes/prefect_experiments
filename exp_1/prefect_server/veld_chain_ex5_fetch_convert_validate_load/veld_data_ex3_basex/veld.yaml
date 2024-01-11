@@ -1,9 +1,0 @@
-x-veld:
-  data:
-    about:
-      description: "example veld for testing and showcasing"
-    format: "BaseX Storage"
-    content: "dummy data"
-    # If a folder is required as input or output, it is recommended to add a trailing "/" to its end
-    # to highlight it being a folder rather than a file
-    path: ./db_data/

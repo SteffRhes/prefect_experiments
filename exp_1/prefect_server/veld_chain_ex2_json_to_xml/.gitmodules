@@ -1,9 +1,0 @@
-[submodule "veld_executable_ex2_json_to_xml"]
-	path = veld_executable_ex2_json_to_xml
-	url = ../veld_executable_ex2_json_to_xml.git
-[submodule "veld_data_ex1_json"]
-	path = veld_data_ex1_json
-	url = ../veld_data_ex1_json.git
-[submodule "veld_data_ex2_xml"]
-	path = veld_data_ex2_xml
-	url = ../veld_data_ex2_xml.git

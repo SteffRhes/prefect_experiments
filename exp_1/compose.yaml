@@ -40,6 +40,8 @@ services:
       - ./prefect_client/:/home/docker_user
     networks:
       - prefect_network
+    environment:
+      - PREFECT_API_URL=http://prefect_server:4200/api
 
 networks:
   prefect_network:

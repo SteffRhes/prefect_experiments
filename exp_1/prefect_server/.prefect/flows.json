@@ -1,3 +1,6 @@
 {
+  "Simple Flow": "actions-prefect-deploy/examples/simple/flow.py:call_api",
+  "Simple Flow 2": "dockerized/exp_4/flow.py:call_api",
+  "exp-3": "dockerized/exp_3_yaml/exp_3.py:exp_3",
   "foo": "foo/deployments.py:foo"
 }

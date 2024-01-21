@@ -4,3 +4,6 @@
 [submodule "exp_1/prefect_server/actions-prefect-deploy"]
 	path = exp_1/prefect_server/actions-prefect-deploy
 	url = https://github.com/PrefectHQ/actions-prefect-deploy.git
+[submodule "exp_1/prefect_server/dockerized/exp_4"]
+	path = exp_1/prefect_server/dockerized/exp_4
+	url = https://github.com/SteffRhes/prefect_exp_4.git

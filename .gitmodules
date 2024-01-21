@@ -7,3 +7,6 @@
 [submodule "exp_1/prefect_server/dockerized/exp_4"]
 	path = exp_1/prefect_server/dockerized/exp_4
 	url = https://github.com/SteffRhes/prefect_exp_4.git
+[submodule "exp_1/prefect_server/veld_chain_ex2_json_to_xml__prefect_yaml"]
+	path = exp_1/prefect_server/veld_chain_ex2_json_to_xml__prefect_yaml
+	url = https://github.com/acdh-oeaw/veld_chain_ex2_json_to_xml.git
